@@ -10,7 +10,7 @@ public class Configuration {
  public final String driver;
  public final Integer numConexionesMaximas=5;
   
- /**Inicializamos los valores de la base ded datos para poder conectarnos a ella**/
+ /**Inicializamos los valores de la base de datos para poder conectarnos a ella**/
  public Configuration(){
      user="root";
      password="abcd*1234";

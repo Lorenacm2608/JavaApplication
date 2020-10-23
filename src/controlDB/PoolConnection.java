@@ -10,17 +10,29 @@ import java.util.logging.Logger;
 
 /**
  * @author Lorena Cáceres Manuel
+ * 
+ * devolver/get --> sincronizado
+ * conexonesMaximas marcadas por hilos
+ * ¿donde se crea de forma permanente el ArrayList?
  */
 public class PoolConnection {
 
     private List<Connection> conexionesDisponibles = new ArrayList<>();
     private List<Connection> conexionesUsadas = new ArrayList<>();
-    private final int conexionesMaximas = 5;
+    private int conexionesMaximas;
     //private final int conexionesMinimas= 1;
 
     public PoolConnection() throws SQLException {
         for (int i = 1 ; i < conexionesMaximas; i++) {
             conexionesDisponibles.add(this.crearConexion());
+        }
+    }
+    
+    public void getInstance(PoolConnection pool){
+        if(pool==null){
+            
+        }else{
+            
         }
     }
 
@@ -66,7 +78,7 @@ public class PoolConnection {
      * encargará de borrar una de las usadas y añadirse a las conexiones
      * disponibles
      * @return true: hemos borrado una de las conexiones usadas y la hemos
-     * añadido a las conexiones usadas *
+     * añadido a las conexiones disponibles *
      */
     public boolean devolverConexion(Connection con) {
         if (con != null) {
@@ -85,5 +97,5 @@ public class PoolConnection {
     public int numeroConexionesDisponibles() {
         return conexionesDisponibles.size();
     }
-
+   
 }
