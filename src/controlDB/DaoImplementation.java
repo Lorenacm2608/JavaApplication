@@ -15,6 +15,8 @@ import exceptions.UsuarioExistenteException;
 import exceptions.UsuarioNoEncontradoException;
 import java.sql.Date;
 import java.sql.ResultSet;
+import java.sql.Timestamp;
+import java.time.LocalDateTime;
 
 /**
  *
@@ -30,8 +32,9 @@ public class DaoImplementation implements Signable {
     final String selectContrasena = "select * from usuario where usuario = ? and contrasena = BINARY ?";
     final String selectEmail = "select * from usuario where email = ?";
     final String insertUsuario = "insert into usuario(usuario,email,nombre,estado,privilegio,contrasena,ultimoAcceso,ultimaContrasena)values(?,?,?,?,?,?,?,?)";
-    final String updateFecha = "update usuario set ultimoAcceso = now() where usuario = ? and contrasena = ?";
-
+    //final String updateFecha = "update usuario set ultimoAcceso = now() where usuario = ? and contrasena = ?";
+    final String updateFecha = "update usuario set ultimoAcceso = ? where usuario = ? and contrasena = ?";
+    
     public DaoImplementation() {
     }
 
@@ -200,11 +203,15 @@ public class DaoImplementation implements Signable {
             pool = new PoolConnection();
             con = pool.getInstance();
             String query = updateFecha;
+            LocalDateTime now = LocalDateTime.now();
+            Timestamp timestamp = Timestamp.valueOf(now);
+            
             ps = con.prepareStatement(query);
-
-            ps.setString(1, username);
-            ps.setString(2, password);
-            ps.executeUpdate(query);
+       
+            ps.setTimestamp(1,timestamp);
+            ps.setString(2, username);
+            ps.setString(3, password);
+            ps.executeUpdate();
         } catch (SQLException ex) {
             Logger.getLogger(DaoImplementation.class.getName()).log(Level.SEVERE, null, ex);
         } finally {

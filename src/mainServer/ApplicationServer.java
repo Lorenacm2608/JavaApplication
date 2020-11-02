@@ -16,7 +16,7 @@ public class ApplicationServer {
 
     private int limiteHilo = 2;
     private int actualHilo = 0;
-    private static final int port = 3338;
+    private static final int port = 5555;
 
     //!--AÑADIR LIMITE DE HILOS
     public static void main(String[] args) throws IOException {
