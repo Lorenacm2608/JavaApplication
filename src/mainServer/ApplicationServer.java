@@ -1,51 +1,52 @@
 package mainServer;
 
-import controlDB.PoolConnection;
-import controlDB.PoolPila;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.io.IOException;
+import java.net.ServerSocket;
+import java.net.Socket;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import worker.Worker;
 
 /**
  *
- * @author 2dam
+ * @author Fredy Vargas Flores
+ * @author Lorena Cáceres Manuel
  */
 public class ApplicationServer {
 
-    public static void main(String[] args) throws SQLException {
-        PoolPila pool = new PoolPila();
-        Connection con = null;
-        // for (int i = 1; i < 7; i++) {
-        //  con1 = pool.getConnection();
-        //   pool.devolverConexion(con1);
-        // System.out.println(pool.conexionesDisponibles.size()); 
-        String select="select * from tartanga";
-        try {
-            con = pool.getConnection();
-            try (PreparedStatement ps = con.prepareStatement(select)) {
-                ResultSet rs = ps.executeQuery();
-                //System.out.println("There are below tables:");
-                while (rs.next()) {
-                    String nombre = rs.getString(1);
-                    System.out.println(nombre);
-                }
-            }
-        } finally {
-            if (con != null) {
-                pool.devolverConexion(con);
-            }
-        }
+    private int limiteHilo = 2;
+    private int actualHilo = 0;
+    private static final int port = 5555;
 
-        //  }
+    //!--AÑADIR LIMITE DE HILOS
+    public static void main(String[] args) throws IOException {
+        new ApplicationServer().iniciarServer();
+
     }
 
-    /*   
-        if(pool!=null){
-            
-            System.out.println("Conectado!");
-            
-        }else{
-            System.out.println("No conectado");
-        }*/
+    public void iniciarServer() throws IOException {
+        ServerSocket ss = new ServerSocket(port);
+        System.out.println("[SERVER] Iniciando Servidor...");
+        int hActuales = 0;
+        //  Worker worker
+        while (true) {
+            Socket socket = ss.accept(); //Aceptaremos al cliente
+            // if(hActuales<limiteConexion){
+
+            if (actualHilo < limiteHilo) {
+                System.out.println("[SERVER] Cliente aceptado!");
+                Worker worker = new Worker(socket); //Llamamos al worker y le pasamos el socketS
+                actualHilo++;
+                try {
+                   // worker.wait();
+                    worker.join();
+                    actualHilo--;
+                } catch (InterruptedException ex) {
+                    Logger.getLogger(ApplicationServer.class.getName()).log(Level.SEVERE, null, ex);
+                }
+            } else {
+                System.out.println("Siento decirte que no hay hilos disponibles ");
+            }
+        }
+    }
 }
