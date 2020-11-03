@@ -204,10 +204,8 @@ public class DaoImplementation implements Signable {
             con = pool.getInstance();
             String query = updateFecha;
             LocalDateTime now = LocalDateTime.now();
-            Timestamp timestamp = Timestamp.valueOf(now);
-            
-            ps = con.prepareStatement(query);
-       
+            Timestamp timestamp = Timestamp.valueOf(now);         
+            ps = con.prepareStatement(query);      
             ps.setTimestamp(1,timestamp);
             ps.setString(2, username);
             ps.setString(3, password);
